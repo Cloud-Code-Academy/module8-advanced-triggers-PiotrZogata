@@ -59,20 +59,7 @@ public with sharing class AccountHelper {
             }
         }       
     }
-    //When an account is inserted set the rating to 'Hot' if the Phone, Website, and Fax is not empty.
-    // public List <Account> setRating (List <Account> listOfAcc) {
-    // //  The body of the method
-    //     List <Account> listOfAccToUpdate = new List <Account> ();
-    //         for (Account acc : listOfAcc) {
-    //             if (acc.Phone != null && acc.Website != null && acc.Fax != null) {
-    //             acc.Rating = 'Hot';
-    //             listOfAccToUpdate.add(acc);
-    //         }
-
-    //     }
-    //         return listOfAccToUpdate;
-    // }
-
+   
     public List<Account> setRating (List <Account> listOfAcc) {
         List <Account> listAccToUpdate = new List<Account>();
         for (Account acc : listOfAcc) {
@@ -84,8 +71,17 @@ public with sharing class AccountHelper {
         return listAccToUpdate;
     }
      
-
-    //[public | private ] [static] data_type defaultContact (input parameters) {
+    public List<Contact> defaultContact (List<Account> listOfAcc) {
     //  The body of the method
-    //}
+    List<Contact> contacts = new List<Contact>();   
+    for(Account acc : listOfAcc){
+        Contact con = new Contact();
+        con.LastName = 'DefaultContact';
+        con.Email = 'default@email.com';
+        con.AccountId = acc.Id;
+        contacts.add(con);
+    }
+    insert contacts; 
+    return contacts;
+    }
 }

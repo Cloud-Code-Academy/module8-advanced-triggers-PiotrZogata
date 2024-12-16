@@ -20,33 +20,14 @@ Let's dive into the specifics of each operation:
 trigger AccountTrigger on Account (before insert, after insert) {
     AccountHelper accountHelper = new AccountHelper();
 
-    /*
-    * Account Trigger
-    * When an account is inserted change the account type to 'Prospect' if there is no value in the type field.
-    * Trigger should only fire on insert.
-    */
+   
     if (Trigger.isBefore && Trigger.isInsert) {
         accountHelper.setTypeProspect(Trigger.new);
         accountHelper.addressCopy(Trigger.new);
         accountHelper.setRating(Trigger.new);
-    }  
-    /*
-    * Account Trigger
-    * When an account is inserted create a contact related to the account with the following default values:
-    * LastName = 'DefaultContact'
-    * Email = 'default@email.com'
-    * Trigger should only fire on insert.
-    */    
-    if(Trigger.isAfter && Trigger.isInsert){     
-        List<Contact> contacts = new List<Contact>();   
-        for(Account acc : Trigger.new){
-            Contact con = new Contact();
-            con.LastName = 'DefaultContact';
-            con.Email = 'default@email.com';
-            con.AccountId = acc.Id;
-            contacts.add(con);
-        }
-        insert contacts; 
+    } 
+    if(Trigger.isAfter && Trigger.isInsert) {
+        accountHelper.defaultContact(Trigger.new);
     }
 }
 
