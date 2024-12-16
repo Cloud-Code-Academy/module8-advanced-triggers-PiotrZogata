@@ -36,13 +36,54 @@ public with sharing class AccountHelper {
         }
     }
 
-    void addressCopy(){
+    public void addressCopy(List <Account> listOfAccounts){
+        for (Account acc : listOfAccounts) {
+            if (acc.ShippingStreet != null) {
+                acc.BillingStreet = acc.ShippingStreet;
+            }
 
+            if (acc.ShippingCity != null) {
+                acc.BillingCity = acc.ShippingCity;
+            }
+
+            if (acc.ShippingState != null) {
+                acc.BillingState = acc.ShippingState;
+            }
+
+            if (acc.ShippingPostalCode != null) {
+                acc.BillingPostalCode = acc.ShippingPostalCode;
+            }
+
+            if (acc.ShippingCountry != null) {
+                acc.BillingCountry = acc.ShippingCountry;
+            }
+        }       
     }
+    //When an account is inserted set the rating to 'Hot' if the Phone, Website, and Fax is not empty.
+    // public List <Account> setRating (List <Account> listOfAcc) {
+    // //  The body of the method
+    //     List <Account> listOfAccToUpdate = new List <Account> ();
+    //         for (Account acc : listOfAcc) {
+    //             if (acc.Phone != null && acc.Website != null && acc.Fax != null) {
+    //             acc.Rating = 'Hot';
+    //             listOfAccToUpdate.add(acc);
+    //         }
 
-    //[public | private ] [static] data_type setRating (input parameters) {
-    //  The body of the method
-    //}
+    //     }
+    //         return listOfAccToUpdate;
+    // }
+
+    public List<Account> setRating (List <Account> listOfAcc) {
+        List <Account> listAccToUpdate = new List<Account>();
+        for (Account acc : listOfAcc) {
+            if (acc.Phone != null && acc.Website != null && acc.Fax != null) {
+                acc.Rating = 'Hot';
+                listAccToUpdate.add(acc);
+            }
+        }
+        return listAccToUpdate;
+    }
+     
 
     //[public | private ] [static] data_type defaultContact (input parameters) {
     //  The body of the method
