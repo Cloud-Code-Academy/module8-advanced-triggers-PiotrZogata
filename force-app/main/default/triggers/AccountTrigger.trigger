@@ -18,6 +18,7 @@ For this lesson, students have two options:
 Let's dive into the specifics of each operation:
 */
 trigger AccountTrigger on Account (before insert, after insert) {
+    AccountHelper accountHelper = new AccountHelper();
 
     /*
     * Account Trigger
@@ -25,11 +26,7 @@ trigger AccountTrigger on Account (before insert, after insert) {
     * Trigger should only fire on insert.
     */
     if (Trigger.isBefore && Trigger.isInsert) {
-        for (Account acc : Trigger.new) {
-            if (acc.Type == null) {
-                acc.Type = 'Prospect';
-            }
-        }
+        accountHelper.setTypeProspect(Trigger.new);
     }
 
     /*
@@ -93,3 +90,5 @@ trigger AccountTrigger on Account (before insert, after insert) {
         insert contacts; 
     }
 }
+
+

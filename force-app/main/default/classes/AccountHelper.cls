@@ -28,8 +28,12 @@ Always ensure that your helper methods are bulk-safe to handle multiple records 
 */
 public with sharing class AccountHelper {
     
-    public void setTypeProspect(SObject objects){
-
+    public void setTypeProspect(List <Account> listOfAccounts){
+        for (Account acc : listOfAccounts) {
+            if (acc.Type == null) {
+                acc.Type = 'Prospect';
+            }
+        }
     }
 
     void addressCopy(){
