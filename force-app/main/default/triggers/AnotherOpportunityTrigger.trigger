@@ -53,14 +53,18 @@ trigger AnotherOpportunityTrigger on Opportunity (before insert, after insert, b
             insert listOfTask;
         } else if (Trigger.isUpdate){
             // Append Stage changes in Opportunity Description
-            for (Opportunity opp : Trigger.new){
-                for (Opportunity oldOpp : Trigger.old){
-                    if (opp.StageName != null){
-                        opp.Description += '\n Stage Change:' + opp.StageName + ':' + DateTime.now().format();
-                    }
-                }                
+            List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+            for (Opportunity opp : Trigger.new){       
+                Opportunity oldOpp = Trigger.oldMap.get(opp.Id); 
+                if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
+                    Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
+                    opp.StageName + ' : ' + DateTime.now().format() );
+                    opportunitiesToUpdate.add(updatedOpp);
+                } 
             }
-            update Trigger.new;
+            if(!opportunitiesToUpdate.isEmpty()){
+                update opportunitiesToUpdate;
+            }
         }
         // Send email notifications when an Opportunity is deleted 
         else if (Trigger.isDelete){
