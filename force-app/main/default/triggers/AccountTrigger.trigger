@@ -20,14 +20,15 @@ Let's dive into the specifics of each operation:
 trigger AccountTrigger on Account (before insert, after insert) {
     AccountHelper accountHelper = new AccountHelper();
 
-   
-    if (Trigger.isBefore && Trigger.isInsert) {
-        accountHelper.setTypeProspect(Trigger.new);
-        accountHelper.addressCopy(Trigger.new);
-        accountHelper.setRating(Trigger.new);
-    } 
-    if(Trigger.isAfter && Trigger.isInsert) {
-        accountHelper.defaultContact(Trigger.new);
+    switch on Trigger.operationType {
+        when BEFORE_INSERT {
+            accountHelper.setTypeProspect(Trigger.new);
+            accountHelper.addressCopy(Trigger.new);
+            accountHelper.setRating(Trigger.new);
+        } 
+        when AFTER_INSERT{
+            accountHelper.defaultContact(Trigger.new);
+        }  
     }
 }
 
