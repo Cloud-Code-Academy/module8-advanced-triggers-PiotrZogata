@@ -110,27 +110,6 @@ trigger AnotherOpportunityTrigger on Opportunity (before insert, after insert, b
     - Assigns a primary contact with the title of 'VP Sales' to undeleted Opportunities.
     - Only updates the Opportunities that don't already have a primary contact.
     */
-
-
-     /*
-    assignPrimaryContact:
-    - Assigns a primary contact with the title of 'VP Sales' to undeleted Opportunities.
-    - Only updates the Opportunities that don't already have a primary contact.
-    */
-    // private static void assignPrimaryContact(Map<Id,Opportunity> oppNewMap) {        
-    //     Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>();
-    //     for (Opportunity opp : oppNewMap.values()){            
-    //         Contact primaryContact = [SELECT Id, AccountId FROM Contact WHERE Title = 'VP Sales' AND AccountId = :opp.AccountId LIMIT 1];
-    //         if (opp.Primary_Contact__c == null){
-    //             Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
-    //             oppToUpdate.Primary_Contact__c = primaryContact.Id;
-    //             oppMap.put(opp.Id, oppToUpdate);
-    //         }
-    //     }
-    //     update oppMap.values();
-    // }
-
-   
     private static void assignPrimaryContact(Map<Id, Opportunity> oppNewMap) {
         // Collect Account IDs from Opportunities
         Set<Id> accountIds = new Set<Id>();
