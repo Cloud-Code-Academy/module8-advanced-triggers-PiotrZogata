@@ -81,8 +81,8 @@ trigger OpportunityTrigger on Opportunity (before insert, after insert, before u
                     // }
     }
 
-    
-        //when AFTER_INSERT {
+
+        when AFTER_INSERT {
             //AnotherOpportunityTrigger 3
             // Create a new Task for newly inserted Opportunities
             // List<Task> listOfTask = new List<Task>();
@@ -94,7 +94,7 @@ trigger OpportunityTrigger on Opportunity (before insert, after insert, before u
             //     tsk.OwnerId = opp.OwnerId;
             //     tsk.ActivityDate = Date.today().addDays(3);
             //     listOfTask.add(tsk);
-        //}
+        }
 
         
         //}

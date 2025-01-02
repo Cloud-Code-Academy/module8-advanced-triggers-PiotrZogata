@@ -38,48 +38,48 @@ trigger AnotherOpportunityTrigger on Opportunity (before insert, after insert, b
     // }
 
     //tu
-    if (Trigger.isAfter){
-        if (Trigger.isInsert){
-            // Create a new Task for newly inserted Opportunities
-            List<Task> listOfTask = new List<Task>();
-            for (Opportunity opp : Trigger.new){
-                Task tsk = new Task();
-                tsk.Subject = 'Call Primary Contact';
-                tsk.WhatId = opp.Id;
-                tsk.WhoId = opp.Primary_Contact__c;
-                tsk.OwnerId = opp.OwnerId;
-                tsk.ActivityDate = Date.today().addDays(3);
-                listOfTask.add(tsk);
-            }
-            insert listOfTask;
-        } else if (Trigger.isUpdate){
-            // Append Stage changes in Opportunity Description
-            List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
-            for (Opportunity opp : Trigger.new){       
-                Opportunity oldOpp = Trigger.oldMap.get(opp.Id); 
-                if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
-                    Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
-                    opp.StageName + ' : ' + DateTime.now().format() );
-                    opportunitiesToUpdate.add(updatedOpp);
-                } 
-            }
-            if(!opportunitiesToUpdate.isEmpty()){
-                update opportunitiesToUpdate;
-            }
-        }
+    // if (Trigger.isAfter){
+    //     if (Trigger.isInsert){
+    //         // Create a new Task for newly inserted Opportunities
+    //         List<Task> listOfTask = new List<Task>();
+    //         for (Opportunity opp : Trigger.new){
+    //             Task tsk = new Task();
+    //             tsk.Subject = 'Call Primary Contact';
+    //             tsk.WhatId = opp.Id;
+    //             tsk.WhoId = opp.Primary_Contact__c;
+    //             tsk.OwnerId = opp.OwnerId;
+    //             tsk.ActivityDate = Date.today().addDays(3);
+    //             listOfTask.add(tsk);
+    //         }
+    //         insert listOfTask;
+    //     } else if (Trigger.isUpdate){
+    //         // Append Stage changes in Opportunity Description
+    //         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+    //         for (Opportunity opp : Trigger.new){       
+    //             Opportunity oldOpp = Trigger.oldMap.get(opp.Id); 
+    //             if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
+    //                 Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
+    //                 opp.StageName + ' : ' + DateTime.now().format() );
+    //                 opportunitiesToUpdate.add(updatedOpp);
+    //             } 
+    //         }
+    //         if(!opportunitiesToUpdate.isEmpty()){
+    //             update opportunitiesToUpdate;
+    //         }
+    //     }
         
         
-        //Send email notifications when an Opportunity is deleted 
-        else if (Trigger.isDelete){
-            notifyOwnersOpportunityDeleted(Trigger.old);
-        } 
+    //     //Send email notifications when an Opportunity is deleted 
+    //     else if (Trigger.isDelete){
+    //         notifyOwnersOpportunityDeleted(Trigger.old);
+    //     } 
         
         
-        //Assign the primary contact to undeleted Opportunities
-        else if (Trigger.isUndelete){
-            assignPrimaryContact(Trigger.newMap);
-        }
-    }
+    //     //Assign the primary contact to undeleted Opportunities
+    //     else if (Trigger.isUndelete){
+    //         assignPrimaryContact(Trigger.newMap);
+    //     }
+    // }
 
     /*
     notifyOwnersOpportunityDeleted:
