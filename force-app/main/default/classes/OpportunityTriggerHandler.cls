@@ -85,20 +85,20 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
                 insert listOfTask;
     }
 
-    // public override void afterUpdate(){
-    //     // Append Stage changes in Opportunity Description from AnotherOpportuiityTrigger
-    //         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
-    //         for (Opportunity opp : this.newOpportunities){       
-    //             Opportunity oldOpp = this.oldOpportunityMap.get(opp.Id); 
-    //             if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
-    //                 Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
-    //                 opp.StageName + ' : ' + DateTime.now().format() );
-    //                 opportunitiesToUpdate.add(updatedOpp);
-    //             } 
-    //         }
-    //         if(!opportunitiesToUpdate.isEmpty()){
-    //             update opportunitiesToUpdate;
-    //         }
+    public override void afterUpdate(){
+        // Append Stage changes in Opportunity Description from AnotherOpportuiityTrigger
+            List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+            for (Opportunity opp : this.newOpportunities){       
+                Opportunity oldOpp = this.oldOpportunityMap.get(opp.Id); 
+                if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
+                    Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
+                    opp.StageName + ' : ' + DateTime.now().format() );
+                    opportunitiesToUpdate.add(updatedOpp);
+                } 
+            }
+            if(!opportunitiesToUpdate.isEmpty()){
+                update opportunitiesToUpdate;
+            }
     //         // Send email notifications when an Opportunity is deleted 
     //      else if (Trigger.isDelete){
     //          OpportunityHelper.notifyOwnersOpportunityDeleted(this.oldOpportunities);
@@ -107,7 +107,7 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
     //      else if (Trigger.isUndelete){
     //          OpportunityHelper.assignPrimaryContact(this.newOpportunityMap);
     //      }
-    // }
+     }
 
     // public override void afterDelete(){
     //         notifyOwnersOpportunityDeleted(this.oldOpportunities);
