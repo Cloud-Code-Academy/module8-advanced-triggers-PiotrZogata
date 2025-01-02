@@ -50,27 +50,26 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
             }
     }
 
-    // public override void beforeDelete(){
+     public override void beforeDelete(){
     //     //When an opportunity is deleted prevent the deletion of a closed won opportunity if the account industry is 'Banking'.
-    //     Map<Id, Account> accounts = new Map<Id, Account>([SELECT Id, Industry FROM Account WHERE Id IN (SELECT AccountId FROM Opportunity WHERE Id IN :this.oldOpportunities)]);
-    //     for(Opportunity opp : this.oldOpportunities){
-    //         if(opp.StageName == 'Closed Won'){
-    //             if(accounts.get(opp.AccountId).Industry == 'Banking'){
-    //                 opp.addError('Cannot delete closed opportunity');
-    //             }
-    //         }
-    //     }
+        Map<Id, Account> accounts = new Map<Id, Account>([SELECT Id, Industry FROM Account WHERE Id IN (SELECT AccountId FROM Opportunity WHERE Id IN :this.oldOpportunities)]);
+        for(Opportunity opp : this.oldOpportunities){
+            if(opp.StageName == 'Closed Won'){
+                if(accounts.get(opp.AccountId).Industry == 'Banking'){
+                    opp.addError('Cannot delete closed opportunity');
+                }
+            }
+        }
 
-        //     } else if (Trigger.isDelete){
-        //     // Prevent deletion of closed Opportunities it is from anotherOpportunity trigger
-        //     for (Opportunity oldOpp : this.oldOpportunities){
-        //         if (oldOpp.IsClosed){
-        //             oldOpp.addError('Cannot delete closed opportunity');
-        //         }
-        //     }
-        // }
-    //}
-
+    //     } else if (Trigger.isDelete){
+    //     // Prevent deletion of closed Opportunities it is from anotherOpportunity trigger
+            for (Opportunity oldOpp : this.oldOpportunities){
+                if (oldOpp.IsClosed){
+                    oldOpp.addError('Cannot delete closed opportunity');
+                }
+            }
+    }
+    
     //public override void afterInsert(){
                 // Create a new Task for newly inserted Opportunities IT's from another Opportunity trigger
                 // List<Task> listOfTask = new List<Task>();
