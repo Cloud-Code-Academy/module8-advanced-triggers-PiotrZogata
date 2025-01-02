@@ -17,45 +17,48 @@ Remember, whichever option you choose, ensure that the trigger is activated and 
 */
 trigger OpportunityTrigger on Opportunity (before insert, after insert, before update, after update, before delete, after delete, after undelete) {
 
+
+
     switch on  Trigger.OperationType {
         when BEFORE_INSERT {
           
             // Set default Type for new Opportunities it's from anotherOpportunity trigger
-            for(Opportunity opp : Trigger.new) {
-                if (opp.Type == null){
-                    opp.Type = 'New Customer';
-                }
-            }        
+            // for(Opportunity opp : Trigger.new) {
+            //     if (opp.Type == null){
+            //         opp.Type = 'New Customer';
+            //     }
+            // }        
         }
 
         when BEFORE_UPDATE {
             //When an opportunity is updated validate that the amount is greater than 5000.
-            for(Opportunity opp : Trigger.new){
-                         if(opp.Amount < 5000){
-                             opp.addError('Opportunity amount must be greater than 5000');
-                         }
-            }
+            // for(Opportunity opp : Trigger.new){
+            //              if(opp.Amount < 5000){
+            //                  opp.addError('Opportunity amount must be greater than 5000');
+            //              }
+            // }
+            
             // When an opportunity is updated set the primary contact on the opportunity to the contact with the title of 'CEO'.   
-            Set<Id> accountIds = new Set<Id>();
-            for(Opportunity opp : Trigger.new){
-            accountIds.add(opp.AccountId);
-           }
-           Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, FirstName, AccountId FROM Contact WHERE AccountId IN :accountIds AND Title = 'CEO' ORDER BY FirstName ASC]);
-           Map<Id, Contact> accountIdToContact = new Map<Id, Contact>();
+            // Set<Id> accountIds = new Set<Id>();
+            // for(Opportunity opp : Trigger.new){
+            // accountIds.add(opp.AccountId);
+            // }
+            // Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, FirstName, AccountId FROM Contact WHERE AccountId IN :accountIds AND Title = 'CEO' ORDER BY FirstName ASC]);
+            // Map<Id, Contact> accountIdToContact = new Map<Id, Contact>();
 
-           for (Contact cont : contacts.values()) {
-            if (!accountIdToContact.containsKey(cont.AccountId)) {
-                accountIdToContact.put(cont.AccountId, cont);
-            }
-        }
+            // for (Contact cont : contacts.values()) {
+            // if (!accountIdToContact.containsKey(cont.AccountId)) {
+            //     accountIdToContact.put(cont.AccountId, cont);
+            // }
+            // }
 
-        for(Opportunity opp : Trigger.new){
-            if(opp.Primary_Contact__c == null){
-                if (accountIdToContact.containsKey(opp.AccountId)){
-                    opp.Primary_Contact__c = accountIdToContact.get(opp.AccountId).Id;
-                }
-            } 
-        }
+            // for(Opportunity opp : Trigger.new){
+            // if(opp.Primary_Contact__c == null){
+            //     if (accountIdToContact.containsKey(opp.AccountId)){
+            //         opp.Primary_Contact__c = accountIdToContact.get(opp.AccountId).Id;
+            //     }
+            // } 
+            // }
         }
 
         
@@ -136,4 +139,7 @@ trigger OpportunityTrigger on Opportunity (before insert, after insert, before u
         }
         update oppMap.values();
     }
+
+    OpportunityTriggerHandler handler = new OpportunityTriggerHandler();
+    handler.run();
 }
