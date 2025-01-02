@@ -51,7 +51,7 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
     }
 
      public override void beforeDelete(){
-    //     //When an opportunity is deleted prevent the deletion of a closed won opportunity if the account industry is 'Banking'.
+        //When an opportunity is deleted prevent the deletion of a closed won opportunity if the account industry is 'Banking'.
         Map<Id, Account> accounts = new Map<Id, Account>([SELECT Id, Industry FROM Account WHERE Id IN (SELECT AccountId FROM Opportunity WHERE Id IN :this.oldOpportunities)]);
         for(Opportunity opp : this.oldOpportunities){
             if(opp.StageName == 'Closed Won'){
@@ -61,9 +61,8 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
             }
         }
 
-    //     } else if (Trigger.isDelete){
-    //     // Prevent deletion of closed Opportunities it is from anotherOpportunity trigger
-            for (Opportunity oldOpp : this.oldOpportunities){
+        // Prevent deletion of closed Opportunities it is from anotherOpportunity trigger
+        for (Opportunity oldOpp : this.oldOpportunities){
                 if (oldOpp.IsClosed){
                     oldOpp.addError('Cannot delete closed opportunity');
                 }
@@ -99,23 +98,15 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
             if(!opportunitiesToUpdate.isEmpty()){
                 update opportunitiesToUpdate;
             }
-    //         // Send email notifications when an Opportunity is deleted 
-    //      else if (Trigger.isDelete){
-    //          OpportunityHelper.notifyOwnersOpportunityDeleted(this.oldOpportunities);
-    //      } 
-    //     // Assign the primary contact to undeleted Opportunities
-    //      else if (Trigger.isUndelete){
-    //          OpportunityHelper.assignPrimaryContact(this.newOpportunityMap);
-    //      }
      }
 
-    // public override void afterDelete(){
-    //         notifyOwnersOpportunityDeleted(this.oldOpportunities);
-    // }
+    public override void afterDelete(){
+            notifyOwnersOpportunityDeleted(this.oldOpportunities);
+    }
 
-    // public override void afterUndelete(){
-    //         assignPrimaryContact(this.newOpportunityMap);
-    //     }
+    public override void afterUndelete(){
+            assignPrimaryContact(this.newOpportunityMap);
+        }
 
 
          /*
@@ -123,65 +114,65 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
     - Sends an email notification to the owner of the Opportunity when it gets deleted.
     - Uses Salesforce's Messaging.SingleEmailMessage to send the email.
     */
-    // private static void notifyOwnersOpportunityDeleted(List<Opportunity> opps) {
-    //     List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-    //     Set<Id>ownersIds = new Set<Id>();
-    //     for(Opportunity opp : opps){
-    //          ownersIds.add(opp.OwnerId);
-    //     }
-    //     Map<Id, User> ownersEmailMap = new Map<Id, User>([Select Id, Email FROM User WHERE Id IN :ownersIds]);
-    //     for (Opportunity opp : opps){
-    //         User owner = ownersEmailMap.get(opp.OwnerId);
-    //         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-    //         String[] toAddresses = new String[] {owner.Email};
-    //         mail.setToAddresses(toAddresses);
-    //         mail.setSubject('Opportunity Deleted : ' + opp.Name);
-    //         mail.setPlainTextBody('Your Opportunity: ' + opp.Name +' has been deleted.');
-    //         mails.add(mail);
-    //     }        
+    private static void notifyOwnersOpportunityDeleted(List<Opportunity> opps) {
+        List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
+        Set<Id>ownersIds = new Set<Id>();
+        for(Opportunity opp : opps){
+             ownersIds.add(opp.OwnerId);
+        }
+        Map<Id, User> ownersEmailMap = new Map<Id, User>([Select Id, Email FROM User WHERE Id IN :ownersIds]);
+        for (Opportunity opp : opps){
+            User owner = ownersEmailMap.get(opp.OwnerId);
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            String[] toAddresses = new String[] {owner.Email};
+            mail.setToAddresses(toAddresses);
+            mail.setSubject('Opportunity Deleted : ' + opp.Name);
+            mail.setPlainTextBody('Your Opportunity: ' + opp.Name +' has been deleted.');
+            mails.add(mail);
+        }        
         
-    //     try {
-    //         Messaging.sendEmail(mails);
-    //     } catch (Exception e){
-    //         System.debug('Exception: ' + e.getMessage());
-    //     }
-    // }
+        try {
+            Messaging.sendEmail(mails);
+        } catch (Exception e){
+            System.debug('Exception: ' + e.getMessage());
+        }
+    }
 
     /*
     assignPrimaryContact:
     - Assigns a primary contact with the title of 'VP Sales' to undeleted Opportunities.
     - Only updates the Opportunities that don't already have a primary contact.
     */
-    // private static void assignPrimaryContact(Map<Id, Opportunity> oppNewMap) {
-    //     // Collect Account IDs from Opportunities
-    //     Set<Id> accountIds = new Set<Id>();
-    //     for (Opportunity opp : oppNewMap.values()) {
-    //         if (opp.AccountId != null) {
-    //             accountIds.add(opp.AccountId);
-    //         }
-    //     }
+    private static void assignPrimaryContact(Map<Id, Opportunity> oppNewMap) {
+        // Collect Account IDs from Opportunities
+        Set<Id> accountIds = new Set<Id>();
+        for (Opportunity opp : oppNewMap.values()) {
+            if (opp.AccountId != null) {
+                accountIds.add(opp.AccountId);
+            }
+        }
     
-    //     // Query Contacts with the title 'VP Sales' for the related Accounts
-    //     Map<Id, Contact> accountToContactMap = new Map<Id, Contact>();
-    //     for (Contact contact : [SELECT Id, AccountId FROM Contact WHERE Title = 'VP Sales' AND AccountId IN :accountIds]) {
-    //         accountToContactMap.put(contact.AccountId, contact);
-    //     }
+        // Query Contacts with the title 'VP Sales' for the related Accounts
+        Map<Id, Contact> accountToContactMap = new Map<Id, Contact>();
+        for (Contact contact : [SELECT Id, AccountId FROM Contact WHERE Title = 'VP Sales' AND AccountId IN :accountIds]) {
+            accountToContactMap.put(contact.AccountId, contact);
+        }
     
-    //     // List to store Opportunities that need updates
-    //     List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+        // List to store Opportunities that need updates
+        List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
     
-    //     // Assign Primary Contact to Opportunities
-    //     for (Opportunity opp : oppNewMap.values()) {
-    //         if (opp.Primary_Contact__c == null && opp.AccountId != null && accountToContactMap.containsKey(opp.AccountId)) {
-    //             Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
-    //             oppToUpdate.Primary_Contact__c = accountToContactMap.get(opp.AccountId).Id;
-    //             opportunitiesToUpdate.add(oppToUpdate);
-    //         }
-    //     }
+        // Assign Primary Contact to Opportunities
+        for (Opportunity opp : oppNewMap.values()) {
+            if (opp.Primary_Contact__c == null && opp.AccountId != null && accountToContactMap.containsKey(opp.AccountId)) {
+                Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
+                oppToUpdate.Primary_Contact__c = accountToContactMap.get(opp.AccountId).Id;
+                opportunitiesToUpdate.add(oppToUpdate);
+            }
+        }
     
-    //     // Update the Opportunities with the new primary contacts
-    //     if (!opportunitiesToUpdate.isEmpty()) {
-    //         update opportunitiesToUpdate;
-    //     }
-    // }
+        // Update the Opportunities with the new primary contacts
+        if (!opportunitiesToUpdate.isEmpty()) {
+            update opportunitiesToUpdate;
+        }
+    }
 }
