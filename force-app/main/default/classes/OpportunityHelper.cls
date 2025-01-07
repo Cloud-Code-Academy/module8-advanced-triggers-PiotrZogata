@@ -2,7 +2,7 @@ public with sharing class OpportunityHelper {
     // public OpportunityHelper() {
     // }
 
-    // public static void updatePrimaryContact(List<Opportunity> opportunities) {
+    // public static void updatePrimaryContactIfTitleCeo(List<Opportunity> opportunities) {
     //         Set<Id> accountIds = new Set<Id>();
     //         for(Opportunity opp : opportunities){
     //             accountIds.add(opp.AccountId);
