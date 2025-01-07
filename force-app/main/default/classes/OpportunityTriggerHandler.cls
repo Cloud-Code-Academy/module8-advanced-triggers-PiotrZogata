@@ -80,9 +80,7 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
             for (Opportunity opp : this.newOpportunities){       
                 Opportunity oldOpp = this.oldOpportunityMap.get(opp.Id); 
                 if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
-                    Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
-                    opp.StageName + ' : ' + DateTime.now().format() );
-                    opportunitiesToUpdate.add(updatedOpp);
+                    opportunitiesToUpdate = OpportunityHelper.makeChangeInOppDescription(this.newOpportunities, this.oldOpportunityMap);
                 } 
             }
             if(!opportunitiesToUpdate.isEmpty()){

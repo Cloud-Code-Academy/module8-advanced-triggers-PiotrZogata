@@ -16,6 +16,17 @@ public with sharing class OpportunityHelper {
         return listOfTask;
     }
 
+    public static List <Opportunity> makeChangeInOppDescription(List <Opportunity> oppList, Map <Id, Opportunity> oldOppMap){
+        List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
+        for(Opportunity opp : oppList){
+        Opportunity oldOpp = oldOppMap.get(opp.Id);
+        Opportunity updatedOpp = new Opportunity( Id = opp.Id, Description = (oldOpp.Description != null ? oldOpp.Description : '') + '\nStage Change:' +
+        opp.StageName + ' : ' + DateTime.now().format() );
+        opportunitiesToUpdate.add(updatedOpp);
+        }
+        return opportunitiesToUpdate;
+    }
+
     
 
     /*
