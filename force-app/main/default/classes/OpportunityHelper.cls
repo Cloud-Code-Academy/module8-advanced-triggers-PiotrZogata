@@ -1,6 +1,4 @@
 public with sharing class OpportunityHelper {
-    // public OpportunityHelper() {
-    // }
 
     public static List<Task> createTaskForOpportunities(List <Opportunity> newOpportunities){
         List<Task> listOfTask = new List<Task>();
@@ -26,8 +24,6 @@ public with sharing class OpportunityHelper {
         }
         return opportunitiesToUpdate;
     }
-
-    
 
     /*
     notifyOwnersOpportunityDeleted:

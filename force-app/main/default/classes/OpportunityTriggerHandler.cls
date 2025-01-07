@@ -50,7 +50,7 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
         }
     }
 
-     public override void beforeDelete(){
+    public override void beforeDelete(){
         //When an opportunity is deleted prevent the deletion of a closed won opportunity if the account industry is 'Banking'.
         Map<Id, Account> accounts = new Map<Id, Account>([SELECT Id, Industry FROM Account WHERE Id IN (SELECT AccountId FROM Opportunity WHERE Id IN :this.oldOpportunities)]);
         for(Opportunity opp : this.oldOpportunities){
