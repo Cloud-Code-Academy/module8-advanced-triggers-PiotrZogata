@@ -70,18 +70,8 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
     }
     
     public override void afterInsert(){
-                //Create a new Task for newly inserted Opportunities IT's from another Opportunity trigger
-                List<Task> listOfTask = new List<Task>();
-                for (Opportunity opp : this.newOpportunities){
-                    Task tsk = new Task();
-                    tsk.Subject = 'Call Primary Contact';
-                    tsk.WhatId = opp.Id;
-                    tsk.WhoId = opp.Primary_Contact__c;
-                    tsk.OwnerId = opp.OwnerId;
-                    tsk.ActivityDate = Date.today().addDays(3);
-                    listOfTask.add(tsk);
-                }
-                insert listOfTask;
+        List <Task> listOfTask = OpportunityHelper.createTaskForOpportunities(this.newOpportunities);
+        insert listOfTask;
     }
 
     public override void afterUpdate(){

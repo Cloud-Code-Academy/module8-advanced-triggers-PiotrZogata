@@ -2,29 +2,21 @@ public with sharing class OpportunityHelper {
     // public OpportunityHelper() {
     // }
 
-    // public static void updatePrimaryContactIfTitleCeo(List<Opportunity> opportunities) {
-    //         Set<Id> accountIds = new Set<Id>();
-    //         for(Opportunity opp : opportunities){
-    //             accountIds.add(opp.AccountId);
-    //         }
-        
-    //         Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, FirstName, AccountId FROM Contact WHERE AccountId IN :accountIds AND Title = 'CEO' ORDER BY FirstName ASC]);
-    //         Map<Id, Contact> accountIdToContact = new Map<Id, Contact>();
+    public static List<Task> createTaskForOpportunities(List <Opportunity> newOpportunities){
+        List<Task> listOfTask = new List<Task>();
+        for (Opportunity opp : newOpportunities){
+        Task tsk = new Task();
+        tsk.Subject = 'Call Primary Contact';
+        tsk.WhatId = opp.Id;
+        tsk.WhoId =  opp.Primary_Contact__c;
+        tsk.OwnerId = opp.OwnerId;
+        tsk.ActivityDate = Date.today().addDays(3);
+        listOfTask.add(tsk);
+        }
+        return listOfTask;
+    }
 
-    //         for (Contact cont : contacts.values()) {
-    //             if (!accountIdToContact.containsKey(cont.AccountId)) {
-    //                 accountIdToContact.put(cont.AccountId, cont);
-    //             }
-    //         }
-
-    //         for(Opportunity opp : opportunities){
-    //             if(opp.Primary_Contact__c == null){
-    //                 if (accountIdToContact.containsKey(opp.AccountId)){
-    //                     opp.Primary_Contact__c = accountIdToContact.get(opp.AccountId).Id;
-    //             }
-    //         } 
-    //     }
-    // }
+    
 
     /*
     notifyOwnersOpportunityDeleted:
