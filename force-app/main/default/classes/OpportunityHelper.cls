@@ -25,6 +25,28 @@ public with sharing class OpportunityHelper {
         return opportunitiesToUpdate;
     }
 
+    public static  void updatePrimaryContactIfTitleCeo(List <Opportunity> listOfOpportunity){
+    Set<Id> accountIds = new Set<Id>();
+            for(Opportunity opp : listOfOpportunity){
+            accountIds.add(opp.AccountId);
+            }
+            Map<Id, Contact> contacts = new Map<Id, Contact>([SELECT Id, FirstName, AccountId FROM Contact WHERE AccountId IN :accountIds AND Title = 'CEO' ORDER BY FirstName ASC]);
+            Map<Id, Contact> accountIdToContact = new Map<Id, Contact>();
+
+            for (Contact cont : contacts.values()) {
+            if (!accountIdToContact.containsKey(cont.AccountId)) {
+                accountIdToContact.put(cont.AccountId, cont);
+                }
+            }
+
+            for(Opportunity opp : listOfOpportunity){
+            if(opp.Primary_Contact__c == null){
+                if (accountIdToContact.containsKey(opp.AccountId)){
+                    opp.Primary_Contact__c = accountIdToContact.get(opp.AccountId).Id;
+                }
+            } 
+        }
+    }
     /*
     notifyOwnersOpportunityDeleted:
     - Sends an email notification to the owner of the Opportunity when it gets deleted.
