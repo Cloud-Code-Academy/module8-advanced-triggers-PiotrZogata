@@ -28,19 +28,60 @@ Always ensure that your helper methods are bulk-safe to handle multiple records 
 */
 public with sharing class AccountHelper {
     
-    public void setTypeProspect(SObject objects){
-
+    public void setTypeProspect(List <Account> listOfAccounts){
+        for (Account acc : listOfAccounts) {
+            if (acc.Type == null) {
+                acc.Type = 'Prospect';
+            }
+        }
     }
 
-    void addressCopy(){
+    public void addressCopy(List <Account> listOfAccounts){
+        for (Account acc : listOfAccounts) {
+            if (acc.ShippingStreet != null) {
+                acc.BillingStreet = acc.ShippingStreet;
+            }
 
+            if (acc.ShippingCity != null) {
+                acc.BillingCity = acc.ShippingCity;
+            }
+
+            if (acc.ShippingState != null) {
+                acc.BillingState = acc.ShippingState;
+            }
+
+            if (acc.ShippingPostalCode != null) {
+                acc.BillingPostalCode = acc.ShippingPostalCode;
+            }
+
+            if (acc.ShippingCountry != null) {
+                acc.BillingCountry = acc.ShippingCountry;
+            }
+        }       
     }
-
-    //[public | private ] [static] data_type setRating (input parameters) {
+   
+    public List<Account> setRating (List <Account> listOfAcc) {
+        List <Account> listAccToUpdate = new List<Account>();
+        for (Account acc : listOfAcc) {
+            if (acc.Phone != null && acc.Website != null && acc.Fax != null) {
+                acc.Rating = 'Hot';
+                listAccToUpdate.add(acc);
+            }
+        }
+        return listAccToUpdate;
+    }
+     
+    public List<Contact> defaultContact (List<Account> listOfAcc) {
     //  The body of the method
-    //}
-
-    //[public | private ] [static] data_type defaultContact (input parameters) {
-    //  The body of the method
-    //}
+    List<Contact> contacts = new List<Contact>();   
+    for(Account acc : listOfAcc){
+        Contact con = new Contact();
+        con.LastName = 'DefaultContact';
+        con.Email = 'default@email.com';
+        con.AccountId = acc.Id;
+        contacts.add(con);
+    }
+    insert contacts; 
+    return contacts;
+    }
 }
