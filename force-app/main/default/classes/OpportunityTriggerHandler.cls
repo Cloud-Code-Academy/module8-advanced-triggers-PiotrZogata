@@ -51,8 +51,7 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
     }
     
     public override void afterInsert(){
-        List <Task> listOfTask = OpportunityHelper.createTaskForOpportunities(this.newOpportunities);
-        insert listOfTask;
+        OpportunityHelper.createTaskForOpportunities(this.newOpportunities);
     }
 
     public override void afterUpdate(){
@@ -61,11 +60,8 @@ public with sharing class OpportunityTriggerHandler extends TriggerHandler {
             for (Opportunity opp : this.newOpportunities){       
                 Opportunity oldOpp = this.oldOpportunityMap.get(opp.Id); 
                 if (opp.StageName != oldOpp.StageName && opp.StageName != null){ 
-                    opportunitiesToUpdate = OpportunityHelper.makeChangeInOppDescription(this.newOpportunities, this.oldOpportunityMap);
+                 OpportunityHelper.makeChangeInOppDescription(this.newOpportunities, this.oldOpportunityMap);
                 } 
-            }
-            if(!opportunitiesToUpdate.isEmpty()){
-                update opportunitiesToUpdate;
             }
      }
 

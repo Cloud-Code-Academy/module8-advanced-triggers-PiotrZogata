@@ -1,6 +1,6 @@
 public with sharing class OpportunityHelper {
 
-    public static List<Task> createTaskForOpportunities(List <Opportunity> newOpportunities){
+    public static void createTaskForOpportunities(List <Opportunity> newOpportunities){
         List<Task> listOfTask = new List<Task>();
         for (Opportunity opp : newOpportunities){
         Task tsk = new Task();
@@ -11,10 +11,10 @@ public with sharing class OpportunityHelper {
         tsk.ActivityDate = Date.today().addDays(3);
         listOfTask.add(tsk);
         }
-        return listOfTask;
+        insert listOfTask;
     }
 
-    public static List <Opportunity> makeChangeInOppDescription(List <Opportunity> oppList, Map <Id, Opportunity> oldOppMap){
+    public static void makeChangeInOppDescription(List <Opportunity> oppList, Map <Id, Opportunity> oldOppMap){
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
         for(Opportunity opp : oppList){
         Opportunity oldOpp = oldOppMap.get(opp.Id);
@@ -22,7 +22,9 @@ public with sharing class OpportunityHelper {
         opp.StageName + ' : ' + DateTime.now().format() );
         opportunitiesToUpdate.add(updatedOpp);
         }
-        return opportunitiesToUpdate;
+        if(!opportunitiesToUpdate.isEmpty()){
+            update opportunitiesToUpdate;
+        }
     }
 
     public static  void updatePrimaryContactIfTitleCeo(List <Opportunity> listOfOpportunity){
